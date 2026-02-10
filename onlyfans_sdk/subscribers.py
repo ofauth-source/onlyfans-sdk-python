@@ -101,18 +101,18 @@ def iter_subscribers(
         
         offset = response.get("nextOffset", offset + len(response.get("list", [])))
 
-def set_note(
+def set_custom_name(
     client: OFAuthClient,
     user_id: str,
     body: Dict[str, Any]
 ) -> Dict[str, Any]:
     """
-    Update subscriber note
-    Update the note/notice for a subscriber
+    Set custom name for subscriber
+    Set a custom display name for a subscriber
 
 **Permission Required:** `subscribers:write`
     """
-    path = f"/v2/access/subscribers/{user_id}/note"
+    path = f"/v2/access/subscribers/{user_id}/custom-name"
     return client.request(
         "PUT",
         path,
@@ -137,18 +137,18 @@ def set_discount(
         body=body,
     )
 
-def set_custom_name(
+def set_note(
     client: OFAuthClient,
     user_id: str,
     body: Dict[str, Any]
 ) -> Dict[str, Any]:
     """
-    Set custom name for subscriber
-    Set a custom display name for a subscriber
+    Update subscriber note
+    Update the note/notice for a subscriber
 
 **Permission Required:** `subscribers:write`
     """
-    path = f"/v2/access/subscribers/{user_id}/custom-name"
+    path = f"/v2/access/subscribers/{user_id}/note"
     return client.request(
         "PUT",
         path,

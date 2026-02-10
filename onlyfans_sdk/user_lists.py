@@ -10,6 +10,24 @@ from .models import (
     V2AccessUsersListsPostResponse,
 )
 
+def create_users_users_lists(
+    client: OFAuthClient,
+    user_id: str,
+    body: V2AccessUsersListsPostRequest
+) -> V2AccessUsersListsPostResponse:
+    """
+    Add user to multiple lists
+    Add a single user to multiple lists in one call
+
+**Permission Required:** `lists:write`
+    """
+    path = f"/v2/access/users/{user_id}/lists"
+    return client.request(
+        "POST",
+        path,
+        body=body,
+    )
+
 def list_users_users_lists(
     client: OFAuthClient,
     limit: Optional[int] = None,
@@ -83,7 +101,7 @@ def iter_users_users_lists(
         
         offset = response.get("nextOffset", offset + len(response.get("list", [])))
 
-def create_users_users_lists(
+def create_users_users_lists_2(
     client: OFAuthClient,
     body: V2AccessUsersListsPostRequest
 ) -> V2AccessUsersListsPostResponse:
@@ -254,22 +272,4 @@ def delete_users_lists_users(
     return client.request(
         "DELETE",
         path,
-    )
-
-def create_users_users_lists_2(
-    client: OFAuthClient,
-    user_id: str,
-    body: V2AccessUsersListsPostRequest
-) -> V2AccessUsersListsPostResponse:
-    """
-    Add user to multiple lists
-    Add a single user to multiple lists in one call
-
-**Permission Required:** `lists:write`
-    """
-    path = f"/v2/access/users/{user_id}/lists"
-    return client.request(
-        "POST",
-        path,
-        body=body,
     )

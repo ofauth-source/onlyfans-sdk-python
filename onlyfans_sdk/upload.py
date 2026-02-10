@@ -13,38 +13,20 @@ from .models import (
     V2AccessUploadsInitPostResponse,
 )
 
-def create_uploads_uploads_check(
+def replace_uploads(
     client: OFAuthClient,
-    body: V2AccessUploadsCheckPostRequest
-) -> V2AccessUploadsCheckPostResponse:
+    media_upload_id: str
+) -> Dict[str, Any]:
     """
-    Check if media already exists in vault
-    Check if media already exists in vault
+    Upload single-part media and finalize (No need to call /complete after upload if using this endpoint)
+    Upload single-part media and finalize (No need to call /complete after upload if using this endpoint)
 
 **Permission Required:** `vault:write`
     """
-    path = f"/v2/access/uploads/check"
+    path = f"/v2/access/uploads/{media_upload_id}"
     return client.request(
-        "POST",
+        "PUT",
         path,
-        body=body,
-    )
-
-def init_uploads(
-    client: OFAuthClient,
-    body: V2AccessUploadsInitPostRequest
-) -> V2AccessUploadsInitPostResponse:
-    """
-    Initialize media upload
-    Initialize media upload
-
-**Permission Required:** `vault:write`
-    """
-    path = f"/v2/access/uploads/init"
-    return client.request(
-        "POST",
-        path,
-        body=body,
     )
 
 def replace_uploads_uploads_parts(
@@ -64,20 +46,21 @@ def replace_uploads_uploads_parts(
         path,
     )
 
-def replace_uploads(
+def create_uploads_uploads_check(
     client: OFAuthClient,
-    media_upload_id: str
-) -> Dict[str, Any]:
+    body: V2AccessUploadsCheckPostRequest
+) -> V2AccessUploadsCheckPostResponse:
     """
-    Upload single-part media and finalize (No need to call /complete after upload if using this endpoint)
-    Upload single-part media and finalize (No need to call /complete after upload if using this endpoint)
+    Check if media already exists in vault
+    Check if media already exists in vault
 
 **Permission Required:** `vault:write`
     """
-    path = f"/v2/access/uploads/{media_upload_id}"
+    path = f"/v2/access/uploads/check"
     return client.request(
-        "PUT",
+        "POST",
         path,
+        body=body,
     )
 
 def complete_uploads(
@@ -91,6 +74,23 @@ def complete_uploads(
 **Permission Required:** `vault:write`
     """
     path = f"/v2/access/uploads/complete"
+    return client.request(
+        "POST",
+        path,
+        body=body,
+    )
+
+def init_uploads(
+    client: OFAuthClient,
+    body: V2AccessUploadsInitPostRequest
+) -> V2AccessUploadsInitPostResponse:
+    """
+    Initialize media upload
+    Initialize media upload
+
+**Permission Required:** `vault:write`
+    """
+    path = f"/v2/access/uploads/init"
     return client.request(
         "POST",
         path,
