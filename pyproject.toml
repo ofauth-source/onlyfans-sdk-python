@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "onlyfans-sdk"
 version = "2.2.3"
 description = "OFAuth Python SDK v2 - Type-safe API client with Pydantic models"
+keywords = ["ofauth", "onlyfans", "onlyfans-sdk", "sdk", "api", "access", "python"]
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
