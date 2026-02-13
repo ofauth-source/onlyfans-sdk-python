@@ -11,53 +11,74 @@ from .models import (
     V2AccessUsersSearchGetResponse,
 )
 
-def get_users(
+def list_restricts(
     client: OFAuthClient,
-    user_id: str
-) -> Dict[str, Any]:
+    limit: Optional[int] = None,
+    offset: Optional[int] = None
+) -> V2AccessUsersRestrictGetResponse:
     """
-    Get user
-    Get user
+    List restricted users
+    List restricted users
 
-**Permission Required:** `profile:read`
+**Permission Required:** `users:write`
     """
-    path = f"/v2/access/users/{user_id}"
+    path = f"/v2/access/users/restrict"
+    query = {
+        "limit": limit,
+        "offset": offset,
+    }
     return client.request(
         "GET",
         path,
+        query=query,
     )
 
-def create_restrict(
+def iter_restricts(
     client: OFAuthClient,
-    user_id: str
-) -> Dict[str, Any]:
+    page_size: int = 20,
+    max_items: Optional[int] = None
+) -> Generator[Any, None, None]:
     """
-    Restrict user
-    Restrict user
-
-**Permission Required:** `users:write`
+    List restricted users
+    
+    Returns a generator that yields items one at a time, automatically
+    handling pagination.
+    
+    Args:
+        page_size: Number of items per page (default: 20)
+        max_items: Maximum total items to yield (default: unlimited)
+    
+    Yields:
+        Individual items from the list response
+    
+    Example:
+        for item in iter_restricts(client, connection_id="..."):
+            print(item)
     """
-    path = f"/v2/access/users/{user_id}/restrict"
-    return client.request(
-        "POST",
-        path,
-    )
-
-def delete_restrict(
-    client: OFAuthClient,
-    user_id: str
-) -> Dict[str, Any]:
-    """
-    Unrestrict user
-    Unrestrict user
-
-**Permission Required:** `users:write`
-    """
-    path = f"/v2/access/users/{user_id}/restrict"
-    return client.request(
-        "DELETE",
-        path,
-    )
+    offset = 0
+    fetched = 0
+    
+    while True:
+        if max_items is not None and fetched >= max_items:
+            return
+        
+        remaining = page_size if max_items is None else min(page_size, max_items - fetched)
+        response = list_restricts(
+            client=client,
+            limit=remaining,
+            offset=offset,
+        )
+        
+        for item in response.get("list", []):
+            if max_items is not None and fetched >= max_items:
+                return
+            yield item
+            fetched += 1
+        
+        if not response.get("hasMore", False):
+            return
+        
+        offset = response.get("nextOffset", offset + len(response.get("list", [])))
 
 def list_blockeds(
     client: OFAuthClient,
@@ -148,75 +169,6 @@ def list_lists(
         query=query,
     )
 
-def list_restricts(
-    client: OFAuthClient,
-    limit: Optional[int] = None,
-    offset: Optional[int] = None
-) -> V2AccessUsersRestrictGetResponse:
-    """
-    List restricted users
-    List restricted users
-
-**Permission Required:** `users:write`
-    """
-    path = f"/v2/access/users/restrict"
-    query = {
-        "limit": limit,
-        "offset": offset,
-    }
-    return client.request(
-        "GET",
-        path,
-        query=query,
-    )
-
-def iter_restricts(
-    client: OFAuthClient,
-    page_size: int = 20,
-    max_items: Optional[int] = None
-) -> Generator[Any, None, None]:
-    """
-    List restricted users
-    
-    Returns a generator that yields items one at a time, automatically
-    handling pagination.
-    
-    Args:
-        page_size: Number of items per page (default: 20)
-        max_items: Maximum total items to yield (default: unlimited)
-    
-    Yields:
-        Individual items from the list response
-    
-    Example:
-        for item in iter_restricts(client, connection_id="..."):
-            print(item)
-    """
-    offset = 0
-    fetched = 0
-    
-    while True:
-        if max_items is not None and fetched >= max_items:
-            return
-        
-        remaining = page_size if max_items is None else min(page_size, max_items - fetched)
-        response = list_restricts(
-            client=client,
-            limit=remaining,
-            offset=offset,
-        )
-        
-        for item in response.get("list", []):
-            if max_items is not None and fetched >= max_items:
-                return
-            yield item
-            fetched += 1
-        
-        if not response.get("hasMore", False):
-            return
-        
-        offset = response.get("nextOffset", offset + len(response.get("list", [])))
-
 def list_searchs(
     client: OFAuthClient,
     limit: Optional[int] = None,
@@ -239,4 +191,52 @@ def list_searchs(
         "GET",
         path,
         query=query,
+    )
+
+def get_users(
+    client: OFAuthClient,
+    user_id: str
+) -> Dict[str, Any]:
+    """
+    Get user
+    Get user
+
+**Permission Required:** `profile:read`
+    """
+    path = f"/v2/access/users/{user_id}"
+    return client.request(
+        "GET",
+        path,
+    )
+
+def create_restrict(
+    client: OFAuthClient,
+    user_id: str
+) -> Dict[str, Any]:
+    """
+    Restrict user
+    Restrict user
+
+**Permission Required:** `users:write`
+    """
+    path = f"/v2/access/users/{user_id}/restrict"
+    return client.request(
+        "POST",
+        path,
+    )
+
+def delete_restrict(
+    client: OFAuthClient,
+    user_id: str
+) -> Dict[str, Any]:
+    """
+    Unrestrict user
+    Unrestrict user
+
+**Permission Required:** `users:write`
+    """
+    path = f"/v2/access/users/{user_id}/restrict"
+    return client.request(
+        "DELETE",
+        path,
     )

@@ -14,6 +14,47 @@ from .models import (
     V2AccountWhoamiGetResponse,
 )
 
+def whoami(
+    client: OFAuthClient
+) -> V2AccountWhoamiGetResponse:
+    """
+    Whoami
+    Returns general account information for the API key's organization.
+    """
+    path = f"/v2/account/whoami"
+    return client.request(
+        "GET",
+        path,
+    )
+
+def delete_connections(
+    client: OFAuthClient,
+    connection_id: str
+) -> Dict[str, Any]:
+    """
+    Disconnect connection
+    Disconnects a connection, and logs out the user. Must be called to remove the connection from your account and stop billing.
+    """
+    path = f"/v2/account/connections/{connection_id}"
+    return client.request(
+        "DELETE",
+        path,
+    )
+
+def invalidate_connections(
+    client: OFAuthClient,
+    connection_id: str
+) -> Dict[str, Any]:
+    """
+    Invalidate connection
+    Invalidates a connection by marking it as expired and logging out the user. The connection record is preserved, allowing the user to reconnect with updated permissions.
+    """
+    path = f"/v2/account/connections/{connection_id}/invalidate"
+    return client.request(
+        "POST",
+        path,
+    )
+
 def list_connections(
     client: OFAuthClient,
     status: Optional[Literal["active", "expired", "awaiting_2fa"]] = None,
@@ -89,6 +130,36 @@ def iter_connections(
         
         offset = response.get("nextOffset", offset + len(response.get("list", [])))
 
+def get_connection_settings(
+    client: OFAuthClient,
+    connection_id: str
+) -> Dict[str, Any]:
+    """
+    Get connection settings
+    Get settings for a specific connection including Vault+ state
+    """
+    path = f"/v2/account/connections/{connection_id}/settings"
+    return client.request(
+        "GET",
+        path,
+    )
+
+def update_connection_settings(
+    client: OFAuthClient,
+    connection_id: str,
+    body: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Update connection settings
+    Update settings for a specific connection. Set vaultPlus.enabled to toggle vault caching. Set vaultPlus.settings to override org defaults (null to reset to org defaults).
+    """
+    path = f"/v2/account/connections/{connection_id}/settings"
+    return client.request(
+        "PATCH",
+        path,
+        body=body,
+    )
+
 def create_connections_connections_import(
     client: OFAuthClient,
     body: V2AccountConnectionsImportPostRequest
@@ -114,64 +185,6 @@ def update_connections_connections_import(
     Update the session data for an existing imported connection. The new session must belong to the same OnlyFans user (matched by user ID from the cookie). This allows refreshing expired or rotated sessions without deleting and re-importing the connection, preserving the connection ID.
     """
     path = f"/v2/account/connections/import/{connection_id}"
-    return client.request(
-        "PATCH",
-        path,
-        body=body,
-    )
-
-def delete_connections(
-    client: OFAuthClient,
-    connection_id: str
-) -> Dict[str, Any]:
-    """
-    Disconnect connection
-    Disconnects a connection, and logs out the user. Must be called to remove the connection from your account and stop billing.
-    """
-    path = f"/v2/account/connections/{connection_id}"
-    return client.request(
-        "DELETE",
-        path,
-    )
-
-def invalidate_connections(
-    client: OFAuthClient,
-    connection_id: str
-) -> Dict[str, Any]:
-    """
-    Invalidate connection
-    Invalidates a connection by marking it as expired and logging out the user. The connection record is preserved, allowing the user to reconnect with updated permissions.
-    """
-    path = f"/v2/account/connections/{connection_id}/invalidate"
-    return client.request(
-        "POST",
-        path,
-    )
-
-def get_connection_settings(
-    client: OFAuthClient,
-    connection_id: str
-) -> Dict[str, Any]:
-    """
-    Get connection settings
-    Get settings for a specific connection including Vault+ state
-    """
-    path = f"/v2/account/connections/{connection_id}/settings"
-    return client.request(
-        "GET",
-        path,
-    )
-
-def update_connection_settings(
-    client: OFAuthClient,
-    connection_id: str,
-    body: Dict[str, Any]
-) -> Dict[str, Any]:
-    """
-    Update connection settings
-    Update settings for a specific connection. Set vaultPlus.enabled to toggle vault caching. Set vaultPlus.settings to override org defaults (null to reset to org defaults).
-    """
-    path = f"/v2/account/connections/{connection_id}/settings"
     return client.request(
         "PATCH",
         path,
@@ -204,17 +217,4 @@ def update_org_settings(
         "PATCH",
         path,
         body=body,
-    )
-
-def whoami(
-    client: OFAuthClient
-) -> V2AccountWhoamiGetResponse:
-    """
-    Whoami
-    Returns general account information for the API key's organization.
-    """
-    path = f"/v2/account/whoami"
-    return client.request(
-        "GET",
-        path,
     )

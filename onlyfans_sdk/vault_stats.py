@@ -9,19 +9,6 @@ from .models import (
     V2VaultPlusStoreStatusGetResponse,
 )
 
-def list_v2_vault_plus_store_stats(
-    client: OFAuthClient
-) -> V2VaultPlusStoreStatsGetResponse:
-    """
-    Get organization vault stats
-    Get aggregated vault statistics for the organization
-    """
-    path = f"/v2/vault-plus/store/stats"
-    return client.request(
-        "GET",
-        path,
-    )
-
 def list_v2_vault_plus_store_status(
     client: OFAuthClient,
     connection_id: str
@@ -35,4 +22,17 @@ def list_v2_vault_plus_store_status(
         "GET",
         path,
         connection_id=connection_id,
+    )
+
+def list_v2_vault_plus_store_stats(
+    client: OFAuthClient
+) -> V2VaultPlusStoreStatsGetResponse:
+    """
+    Get organization vault stats
+    Get aggregated vault statistics for the organization
+    """
+    path = f"/v2/vault-plus/store/stats"
+    return client.request(
+        "GET",
+        path,
     )

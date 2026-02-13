@@ -90,6 +90,21 @@ def iter_subscriptions(
         
         offset = response.get("nextOffset", offset + len(response.get("list", [])))
 
+def list_counts(
+    client: OFAuthClient
+) -> V2AccessSubscriptionsCountGetResponse:
+    """
+    Get subscription counts
+    Get counts of subscriptions and subscribers by status
+
+**Permission Required:** `subscriptions:read`
+    """
+    path = f"/v2/access/subscriptions/count"
+    return client.request(
+        "GET",
+        path,
+    )
+
 def list_historys(
     client: OFAuthClient,
     subscription_id: str,
@@ -109,19 +124,4 @@ def list_historys(
         "GET",
         path,
         query=query,
-    )
-
-def list_counts(
-    client: OFAuthClient
-) -> V2AccessSubscriptionsCountGetResponse:
-    """
-    Get subscription counts
-    Get counts of subscriptions and subscribers by status
-
-**Permission Required:** `subscriptions:read`
-    """
-    path = f"/v2/access/subscriptions/count"
-    return client.request(
-        "GET",
-        path,
     )

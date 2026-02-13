@@ -27,184 +27,6 @@ from .models import (
     V2AccessPromotionsTrialLinksShareAccessPostResponse,
 )
 
-def list_promotions(
-    client: OFAuthClient,
-    limit: Optional[int] = None,
-    offset: Optional[int] = None
-) -> V2AccessPromotionsGetResponse:
-    """
-    List promotions
-    Get a list of all promotions
-
-**Permission Required:** `promotions:read`
-    """
-    path = f"/v2/access/promotions"
-    query = {
-        "limit": limit,
-        "offset": offset,
-    }
-    return client.request(
-        "GET",
-        path,
-        query=query,
-    )
-
-def create_promotions(
-    client: OFAuthClient,
-    body: V2AccessPromotionsPostRequest
-) -> V2AccessPromotionsPostResponse:
-    """
-    Create promotion
-    Create a new promotion
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions"
-    return client.request(
-        "POST",
-        path,
-        body=body,
-    )
-
-def replace_promotions(
-    client: OFAuthClient,
-    promotion_id: str,
-    body: Dict[str, Any]
-) -> Dict[str, Any]:
-    """
-    Update promotion
-    Update an existing promotion
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/{promotion_id}"
-    return client.request(
-        "PUT",
-        path,
-        body=body,
-    )
-
-def delete_promotions(
-    client: OFAuthClient,
-    promotion_id: str
-) -> Dict[str, Any]:
-    """
-    Delete promotion
-    Delete a promotion
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/{promotion_id}"
-    return client.request(
-        "DELETE",
-        path,
-    )
-
-def create_stop(
-    client: OFAuthClient,
-    promotion_id: str
-) -> Dict[str, Any]:
-    """
-    Stop promotion
-    Stop/end a promotion
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/{promotion_id}/stop"
-    return client.request(
-        "POST",
-        path,
-    )
-
-def list_bundles(
-    client: OFAuthClient,
-    limit: Optional[int] = None,
-    offset: Optional[int] = None
-) -> V2AccessPromotionsBundlesGetResponse:
-    """
-    List bundles
-    Get a list of all subscription bundles
-
-**Permission Required:** `promotions:read`
-    """
-    path = f"/v2/access/promotions/bundles"
-    query = {
-        "limit": limit,
-        "offset": offset,
-    }
-    return client.request(
-        "GET",
-        path,
-        query=query,
-    )
-
-def create_bundles(
-    client: OFAuthClient,
-    body: V2AccessPromotionsBundlesPostRequest
-) -> V2AccessPromotionsBundlesPostResponse:
-    """
-    Create bundle
-    Create a new subscription bundle
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/bundles"
-    return client.request(
-        "POST",
-        path,
-        body=body,
-    )
-
-def get_bundles(
-    client: OFAuthClient,
-    bundle_id: str
-) -> V2AccessPromotionsBundlesGetResponse:
-    """
-    Get bundle
-    Get details of a specific subscription bundle
-
-**Permission Required:** `promotions:read`
-    """
-    path = f"/v2/access/promotions/bundles/{bundle_id}"
-    return client.request(
-        "GET",
-        path,
-    )
-
-def replace_bundles(
-    client: OFAuthClient,
-    bundle_id: str,
-    body: Dict[str, Any]
-) -> Dict[str, Any]:
-    """
-    Update bundle
-    Update an existing subscription bundle
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/bundles/{bundle_id}"
-    return client.request(
-        "PUT",
-        path,
-        body=body,
-    )
-
-def delete_bundles(
-    client: OFAuthClient,
-    bundle_id: str
-) -> Dict[str, Any]:
-    """
-    Delete bundle
-    Delete a subscription bundle
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/bundles/{bundle_id}"
-    return client.request(
-        "DELETE",
-        path,
-    )
-
 def list_tracking_links(
     client: OFAuthClient,
     limit: Optional[int] = None,
@@ -307,6 +129,40 @@ def create_tracking_links(
         body=body,
     )
 
+def create_tracking_links_share_access(
+    client: OFAuthClient,
+    body: V2AccessPromotionsTrackingLinksShareAccessPostRequest
+) -> V2AccessPromotionsTrackingLinksShareAccessPostResponse:
+    """
+    Share tracking link access
+    Share tracking link access with a user
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/tracking-links/share-access"
+    return client.request(
+        "POST",
+        path,
+        body=body,
+    )
+
+def delete_tracking_links_share_access(
+    client: OFAuthClient,
+    body: V2AccessPromotionsTrackingLinksShareAccessDeleteRequest
+) -> V2AccessPromotionsTrackingLinksShareAccessDeleteResponse:
+    """
+    Revoke tracking link access
+    Revoke tracking link access from a user
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/tracking-links/share-access"
+    return client.request(
+        "DELETE",
+        path,
+        body=body,
+    )
+
 def get_tracking_links(
     client: OFAuthClient,
     tracking_link_id: str
@@ -373,40 +229,6 @@ def list_tracking_links_claimers(
         path,
     )
 
-def create_tracking_links_share_access(
-    client: OFAuthClient,
-    body: V2AccessPromotionsTrackingLinksShareAccessPostRequest
-) -> V2AccessPromotionsTrackingLinksShareAccessPostResponse:
-    """
-    Share tracking link access
-    Share tracking link access with a user
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/tracking-links/share-access"
-    return client.request(
-        "POST",
-        path,
-        body=body,
-    )
-
-def delete_tracking_links_share_access(
-    client: OFAuthClient,
-    body: V2AccessPromotionsTrackingLinksShareAccessDeleteRequest
-) -> V2AccessPromotionsTrackingLinksShareAccessDeleteResponse:
-    """
-    Revoke tracking link access
-    Revoke tracking link access from a user
-
-**Permission Required:** `promotions:write`
-    """
-    path = f"/v2/access/promotions/tracking-links/share-access"
-    return client.request(
-        "DELETE",
-        path,
-        body=body,
-    )
-
 def list_trial_links(
     client: OFAuthClient,
     limit: Optional[int] = None,
@@ -442,6 +264,40 @@ def create_trial_links(
     path = f"/v2/access/promotions/trial-links"
     return client.request(
         "POST",
+        path,
+        body=body,
+    )
+
+def create_trial_links_share_access(
+    client: OFAuthClient,
+    body: V2AccessPromotionsTrialLinksShareAccessPostRequest
+) -> V2AccessPromotionsTrialLinksShareAccessPostResponse:
+    """
+    Share trial link access
+    Share trial link access with a user
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/trial-links/share-access"
+    return client.request(
+        "POST",
+        path,
+        body=body,
+    )
+
+def delete_trial_links_share_access(
+    client: OFAuthClient,
+    body: V2AccessPromotionsTrialLinksShareAccessDeleteRequest
+) -> V2AccessPromotionsTrialLinksShareAccessDeleteResponse:
+    """
+    Revoke trial link access
+    Revoke trial link access from a user
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/trial-links/share-access"
+    return client.request(
+        "DELETE",
         path,
         body=body,
     )
@@ -496,36 +352,180 @@ def delete_trial_links(
         path,
     )
 
-def create_trial_links_share_access(
+def list_bundles(
     client: OFAuthClient,
-    body: V2AccessPromotionsTrialLinksShareAccessPostRequest
-) -> V2AccessPromotionsTrialLinksShareAccessPostResponse:
+    limit: Optional[int] = None,
+    offset: Optional[int] = None
+) -> V2AccessPromotionsBundlesGetResponse:
     """
-    Share trial link access
-    Share trial link access with a user
+    List bundles
+    Get a list of all subscription bundles
+
+**Permission Required:** `promotions:read`
+    """
+    path = f"/v2/access/promotions/bundles"
+    query = {
+        "limit": limit,
+        "offset": offset,
+    }
+    return client.request(
+        "GET",
+        path,
+        query=query,
+    )
+
+def create_bundles(
+    client: OFAuthClient,
+    body: V2AccessPromotionsBundlesPostRequest
+) -> V2AccessPromotionsBundlesPostResponse:
+    """
+    Create bundle
+    Create a new subscription bundle
 
 **Permission Required:** `promotions:write`
     """
-    path = f"/v2/access/promotions/trial-links/share-access"
+    path = f"/v2/access/promotions/bundles"
     return client.request(
         "POST",
         path,
         body=body,
     )
 
-def delete_trial_links_share_access(
+def get_bundles(
     client: OFAuthClient,
-    body: V2AccessPromotionsTrialLinksShareAccessDeleteRequest
-) -> V2AccessPromotionsTrialLinksShareAccessDeleteResponse:
+    bundle_id: str
+) -> V2AccessPromotionsBundlesGetResponse:
     """
-    Revoke trial link access
-    Revoke trial link access from a user
+    Get bundle
+    Get details of a specific subscription bundle
+
+**Permission Required:** `promotions:read`
+    """
+    path = f"/v2/access/promotions/bundles/{bundle_id}"
+    return client.request(
+        "GET",
+        path,
+    )
+
+def replace_bundles(
+    client: OFAuthClient,
+    bundle_id: str,
+    body: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Update bundle
+    Update an existing subscription bundle
 
 **Permission Required:** `promotions:write`
     """
-    path = f"/v2/access/promotions/trial-links/share-access"
+    path = f"/v2/access/promotions/bundles/{bundle_id}"
+    return client.request(
+        "PUT",
+        path,
+        body=body,
+    )
+
+def delete_bundles(
+    client: OFAuthClient,
+    bundle_id: str
+) -> Dict[str, Any]:
+    """
+    Delete bundle
+    Delete a subscription bundle
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/bundles/{bundle_id}"
     return client.request(
         "DELETE",
         path,
+    )
+
+def list_promotions(
+    client: OFAuthClient,
+    limit: Optional[int] = None,
+    offset: Optional[int] = None
+) -> V2AccessPromotionsGetResponse:
+    """
+    List promotions
+    Get a list of all promotions
+
+**Permission Required:** `promotions:read`
+    """
+    path = f"/v2/access/promotions"
+    query = {
+        "limit": limit,
+        "offset": offset,
+    }
+    return client.request(
+        "GET",
+        path,
+        query=query,
+    )
+
+def create_promotions(
+    client: OFAuthClient,
+    body: V2AccessPromotionsPostRequest
+) -> V2AccessPromotionsPostResponse:
+    """
+    Create promotion
+    Create a new promotion
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions"
+    return client.request(
+        "POST",
+        path,
         body=body,
+    )
+
+def replace_promotions(
+    client: OFAuthClient,
+    promotion_id: str,
+    body: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Update promotion
+    Update an existing promotion
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/{promotion_id}"
+    return client.request(
+        "PUT",
+        path,
+        body=body,
+    )
+
+def delete_promotions(
+    client: OFAuthClient,
+    promotion_id: str
+) -> Dict[str, Any]:
+    """
+    Delete promotion
+    Delete a promotion
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/{promotion_id}"
+    return client.request(
+        "DELETE",
+        path,
+    )
+
+def create_stop(
+    client: OFAuthClient,
+    promotion_id: str
+) -> Dict[str, Any]:
+    """
+    Stop promotion
+    Stop/end a promotion
+
+**Permission Required:** `promotions:write`
+    """
+    path = f"/v2/access/promotions/{promotion_id}/stop"
+    return client.request(
+        "POST",
+        path,
     )

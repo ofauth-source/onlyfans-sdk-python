@@ -16,6 +16,7 @@ from onlyfans_sdk._client import OFAuthClient, OFAuthError
 
 MANIFEST_PATH = Path(__file__).with_name("accessEndpoints.manifest.json")
 
+
 def _load_dotenv_local() -> None:
     # Optional convenience: load `.env.e2e.local` from current or parent dirs if present,
     # without overriding already-set environment variables.
@@ -40,7 +41,9 @@ def _load_dotenv_local() -> None:
             value = value.strip()
             if not key:
                 continue
-            if len(value) >= 2 and ((value[0] == value[-1] == '"') or (value[0] == value[-1] == "'")):
+            if len(value) >= 2 and (
+                (value[0] == value[-1] == '"') or (value[0] == value[-1] == "'")
+            ):
                 value = value[1:-1]
             # Only set if the variable is truly unset. This allows callers to explicitly
             # disable contexts by setting empty strings in the environment.
@@ -86,27 +89,33 @@ def _default_query(route: str, fixtures: dict[str, str] | None = None):
             "offset": 0,
         }
 
-    if route in {
-        "/posts",
-        "/subscribers",
-        "/subscriptions",
-        "/chats",
-        "/mass-messages",
-        "/analytics/mass-messages/purchased",
-        "/earnings/transactions",
-        "/earnings/chargebacks",
-        "/promotions",
-        "/promotions/bundles",
-        "/promotions/tracking-links",
-        "/promotions/trial-links",
-        "/users/blocked",
-        "/users/restrict",
-        "/users/lists",
-        "/vault/media",
-        "/vault/lists",
-    } or route.endswith("/notifications") or route.endswith("/release-forms") or route.endswith(
-        "/tagged-friend-users"
-    ) or route.endswith("/users") or route.endswith("/buyers"):
+    if (
+        route
+        in {
+            "/posts",
+            "/subscribers",
+            "/subscriptions",
+            "/chats",
+            "/analytics/mass-messages/sent",
+            "/analytics/mass-messages/purchased",
+            "/earnings/transactions",
+            "/earnings/chargebacks",
+            "/promotions",
+            "/promotions/bundles",
+            "/promotions/tracking-links",
+            "/promotions/trial-links",
+            "/users/blocked",
+            "/users/restrict",
+            "/users/lists",
+            "/vault/media",
+            "/vault/lists",
+        }
+        or route.endswith("/notifications")
+        or route.endswith("/release-forms")
+        or route.endswith("/tagged-friend-users")
+        or route.endswith("/users")
+        or route.endswith("/buyers")
+    ):
         return {"limit": 1}
 
     return None
@@ -137,6 +146,7 @@ def _sleep_until_next(min_delay_ms: int, last_start_at: float) -> float:
 def _env_bool(key: str) -> bool:
     v = (os.getenv(key) or "").strip().lower()
     return v in {"1", "true", "yes", "y"}
+
 
 def _split_csv(value: str) -> list[str]:
     return [v.strip() for v in (value or "").split(",") if v.strip()]
@@ -194,6 +204,7 @@ def _first_list_item_id(value: object) -> str | None:
             return str(first.get(key))
     return None
 
+
 def _chat_user_id_from_chats(value: object) -> str | None:
     obj = _as_dict(value)
     if not obj:
@@ -226,7 +237,8 @@ def test_access_endpoints_manifest_exists():
     manifest = _load_manifest()
     assert any(e.get("method") == "get" and e.get("route") == "/self" for e in manifest)
     assert any(
-        e.get("method") == "get" and e.get("route") == "/analytics/posts/top" for e in manifest
+        e.get("method") == "get" and e.get("route") == "/analytics/posts/top"
+        for e in manifest
     )
 
 
@@ -327,7 +339,9 @@ def test_access_get_contract_no_raw_strings_across_contexts():
             def rate_limited_get(path: str, query: dict | None = None) -> object:
                 nonlocal last_start_at
                 last_start_at = _sleep_until_next(ctx["min_delay_ms"], last_start_at)
-                return client.request("GET", path, query=query, connection_id=ctx["connection_id"])
+                return client.request(
+                    "GET", path, query=query, connection_id=ctx["connection_id"]
+                )
 
             def ensure_fixture(name: str) -> str | None:
                 if name in fixtures:
@@ -378,7 +392,9 @@ def test_access_get_contract_no_raw_strings_across_contexts():
                     return None
 
                 if name == "massMessageId":
-                    val = rate_limited_get("/v2/access/mass-messages", {"limit": 1})
+                    val = rate_limited_get(
+                        "/v2/access/analytics/mass-messages/sent", {"limit": 1}
+                    )
                     mid = _first_list_item_id(val)
                     if mid:
                         fixtures[name] = mid
@@ -394,7 +410,9 @@ def test_access_get_contract_no_raw_strings_across_contexts():
                     return None
 
                 if name == "bundleId":
-                    val = rate_limited_get("/v2/access/promotions/bundles", {"limit": 1})
+                    val = rate_limited_get(
+                        "/v2/access/promotions/bundles", {"limit": 1}
+                    )
                     bid = _first_list_item_id(val)
                     if bid:
                         fixtures[name] = bid
@@ -402,7 +420,9 @@ def test_access_get_contract_no_raw_strings_across_contexts():
                     return None
 
                 if name == "trackingLinkId":
-                    val = rate_limited_get("/v2/access/promotions/tracking-links", {"limit": 1})
+                    val = rate_limited_get(
+                        "/v2/access/promotions/tracking-links", {"limit": 1}
+                    )
                     tid = _first_list_item_id(val)
                     if tid:
                         fixtures[name] = tid
@@ -410,7 +430,9 @@ def test_access_get_contract_no_raw_strings_across_contexts():
                     return None
 
                 if name == "trialLinkId":
-                    val = rate_limited_get("/v2/access/promotions/trial-links", {"limit": 1})
+                    val = rate_limited_get(
+                        "/v2/access/promotions/trial-links", {"limit": 1}
+                    )
                     tid = _first_list_item_id(val)
                     if tid:
                         fixtures[name] = tid
@@ -450,7 +472,7 @@ def test_access_get_contract_no_raw_strings_across_contexts():
                 if isinstance(value, str):
                     if _is_likely_malformed_json(value):
                         raise AssertionError(
-                            f"[{ctx['name']}] raw string contains malformed JSON (e.g. url:\"\"\"\") route={route}"
+                            f'[{ctx["name"]}] raw string contains malformed JSON (e.g. url:"""") route={route}'
                         )
                     raise AssertionError(
                         f"[{ctx['name']}] raw string returned (expected parsed JSON) route={route}"
@@ -459,7 +481,9 @@ def test_access_get_contract_no_raw_strings_across_contexts():
             client.close()
 
     if not ran_any:
-        pytest.skip("no e2e credentials provided (set E2E_ACCESS_BASE_URL + connection/api keys or E2E_CONTRACT_REQUIRED=1)")
+        pytest.skip(
+            "no e2e credentials provided (set E2E_ACCESS_BASE_URL + connection/api keys or E2E_CONTRACT_REQUIRED=1)"
+        )
 
     if strict and remaining:
         missing = sorted([r for r in remaining if isinstance(r, str)])
