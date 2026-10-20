@@ -25,6 +25,7 @@ from . import dynamic_rules
 from . import vault_store
 from . import vault_stats
 from . import vault_media
+from . import mass_messages
 
 # Import generated Pydantic models for type safety
 from . import models
@@ -57,4 +58,5 @@ __all__ = [
     "vault_store",
     "vault_stats",
     "vault_media",
+    "mass_messages",
 ]

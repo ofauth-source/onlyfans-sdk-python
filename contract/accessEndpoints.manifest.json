@@ -25,12 +25,6 @@
   },
   {
     "method": "get",
-    "route": "/analytics/mass-messages/purchased",
-    "tag": "Analytics",
-    "summary": "Mass messages purchased"
-  },
-  {
-    "method": "get",
     "route": "/analytics/mass-messages/sent",
     "tag": "Analytics",
     "summary": "Sent mass messages"
@@ -184,6 +178,12 @@
     "route": "/mass-messages/:massMessageId",
     "tag": "Messages",
     "summary": "Update mass message"
+  },
+  {
+    "method": "get",
+    "route": "/mass-messages/scheduled",
+    "tag": "Mass Messages",
+    "summary": "List scheduled mass messages"
   },
   {
     "method": "get",
