@@ -8,7 +8,6 @@ from .models import (
     V2AccessAnalyticsCampaignsChartGetResponse,
     V2AccessAnalyticsCampaignsTopGetResponse,
     V2AccessAnalyticsMassMessagesChartGetResponse,
-    V2AccessAnalyticsMassMessagesPurchasedGetResponse,
     V2AccessAnalyticsMassMessagesSentGetResponse,
     V2AccessAnalyticsPostsChartGetResponse,
     V2AccessAnalyticsPostsTopGetResponse,
@@ -243,28 +242,6 @@ def list_mass_messages_sents(
         "startDate": start_date,
         "endDate": end_date,
         "limit": limit,
-    }
-    return client.request(
-        "GET",
-        path,
-        query=query,
-    )
-
-def list_mass_messages_purchaseds(
-    client: OFAuthClient,
-    limit: Optional[int] = None,
-    offset: Optional[int] = None
-) -> V2AccessAnalyticsMassMessagesPurchasedGetResponse:
-    """
-    Mass messages purchased
-    Get list of mass messages that were purchased
-
-**Permission Required:** `analytics:read`
-    """
-    path = f"/v2/access/analytics/mass-messages/purchased"
-    query = {
-        "limit": limit,
-        "offset": offset,
     }
     return client.request(
         "GET",

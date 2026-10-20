@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional, Union, BinaryIO
 import json
 import httpx
 
-BASE_URL = "https://api-next.ofauth.com"
+BASE_URL = "https://api.ofauth.com"
 
 
 class OFAuthError(Exception):

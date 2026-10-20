@@ -16,7 +16,9 @@ def list_media(
     sort_direction: Optional[Literal["asc", "desc"]] = None,
     list_id: Optional[int] = None,
     query: Optional[str] = None,
-    media_type: Optional[Literal["photo", "video", "audio", "gif"]] = None
+    media_type: Optional[Literal["photo", "video", "audio", "gif"]] = None,
+    sort: Optional[Literal["recent", "oldest", "most_liked", "highest_tips"]] = None,
+    type: Optional[Literal["photo", "video", "audio", "gif"]] = None
 ) -> V2AccessVaultMediaGetResponse:
     """
     List vault media
@@ -28,11 +30,10 @@ def list_media(
     query = {
         "limit": limit,
         "offset": offset,
-        "sortBy": sort_by,
-        "sortDirection": sort_direction,
+        "sort": sort if sort is not None else ("most_liked" if sort_by == "most-liked" else "highest_tips" if sort_by == "highest-tips" else "oldest" if sort_direction == "asc" else "recent" if sort_by == "recent" else None),
         "listId": list_id,
         "query": query,
-        "mediaType": media_type,
+        "type": type if type is not None else media_type,
     }
     return client.request(
         "GET",
@@ -48,7 +49,9 @@ def iter_media(
     query: Optional[str] = None,
     media_type: Optional[Literal["photo", "video", "audio", "gif"]] = None,
     page_size: int = 20,
-    max_items: Optional[int] = None
+    max_items: Optional[int] = None,
+    sort: Optional[Literal["recent", "oldest", "most_liked", "highest_tips"]] = None,
+    type: Optional[Literal["photo", "video", "audio", "gif"]] = None
 ) -> Generator[Any, None, None]:
     """
     List vault media
@@ -82,6 +85,8 @@ def iter_media(
             list_id=list_id,
             query=query,
             media_type=media_type,
+            sort=sort,
+            type=type,
             limit=remaining,
             offset=offset,
         )

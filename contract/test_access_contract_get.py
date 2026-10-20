@@ -97,7 +97,6 @@ def _default_query(route: str, fixtures: dict[str, str] | None = None):
             "/subscriptions",
             "/chats",
             "/analytics/mass-messages/sent",
-            "/analytics/mass-messages/purchased",
             "/earnings/transactions",
             "/earnings/chargebacks",
             "/promotions",

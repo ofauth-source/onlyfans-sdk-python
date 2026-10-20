@@ -54,7 +54,7 @@ client = OFAuthClient(
 client = OFAuthClient(
     api_key="your-api-key",
     connection_id="conn_xxx",
-    base_url="https://api-next.ofauth.com",
+    base_url="https://api.ofauth.com",
     timeout=30.0,
 )
 ```
