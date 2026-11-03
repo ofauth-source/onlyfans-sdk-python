@@ -1,4 +1,3 @@
-import utils.session
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
