@@ -12,4 +12,4 @@ dist/
 .env
 .env.*
 !.env.example
-node_modules
+docs/

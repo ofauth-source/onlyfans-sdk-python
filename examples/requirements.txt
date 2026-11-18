@@ -1,2 +1,5 @@
-ofauth @ file://..
+-e ..[fastapi,flask]
 python-dotenv>=1.0.0
+uvicorn>=0.23
+redis>=5.0          # redis_store.py only
+pytest>=7.0         # test_webhook_handlers.py only

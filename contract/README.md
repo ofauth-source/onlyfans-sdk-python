@@ -1,20 +1,5 @@
-# SDK Contract Tests (Access API)
+# Access contract checks
 
-Pytest contract tests that hit real OFAuth Access API connections (sandbox + live).
+Supply a standard OAuth Bearer access token with `E2E_ACCESS_TOKEN`, the API origin with `E2E_ACCESS_BASE_URL`, and an explicitly selected account with `E2E_LINKED_ACCOUNT_ID`. The suite maps the generated Access catalog to SDK methods and exercises available GET operations. Set `E2E_CONTRACT_REQUIRED=1` to fail if credentials are absent, and `E2E_CONTRACT_STRICT=1` to fail on missing fixtures.
 
-## Environment Variables
-
-- `E2E_ACCESS_BASE_URL`: base URL for the Access API (e.g. `https://api.ofauth.com`)
-- `E2E_CONTRACT_REQUIRED`: when `true`, missing creds fail the test run
-
-Per-context credentials:
-
-- `E2E_SANDBOX_API_KEY_CREATOR`, `E2E_SANDBOX_CONNECTION_ID_CREATOR`
-- `E2E_SANDBOX_API_KEY_FAN`, `E2E_SANDBOX_CONNECTION_ID_FAN`
-- `E2E_LIVE_API_KEY_CREATOR`, `E2E_LIVE_CONNECTION_ID_CREATOR`
-- `E2E_LIVE_API_KEY_FAN`, `E2E_LIVE_CONNECTION_ID_FAN`
-
-## Rate Limiting
-
-Live contexts enforce a minimum `2000ms` delay between requests in-code.
-
+A missing credential skips the live suite. Offline manifest checks do not certify the issuer. For standard refresh, install a packed SDK in a clean consumer and run `e2e/standard-oauth-consumer.mjs` as described in the generator README.

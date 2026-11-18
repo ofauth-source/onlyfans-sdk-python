@@ -1,75 +1,46 @@
-import os
-from dotenv import load_dotenv
-from onlyfans_sdk import OFAuthClient, account
+"""
+Pagination: manual cursors, iterators, and the async client.
 
-load_dotenv()
+    OFAUTH_ACCESS_TOKEN=... OFAUTH_LINKED_ACCOUNT_ID=... python pagination.py
+"""
 
-def main():
-    api_key = os.getenv('OFAUTH_API_KEY')
-    if not api_key:
-        raise ValueError('OFAUTH_API_KEY environment variable is required')
+from __future__ import annotations
 
-    client = OFAuthClient(api_key=api_key)
+import asyncio
 
-    print('🔑 OFAuth SDK - Pagination Example\n')
+from _env import API_URL, access_token, require
 
-    print('1. Using generator (automatic pagination)...')
-    print('   Fetching first 25 connections...\n')
-    
-    count = 0
-    for connection in account.iter_connections(client, max_items=25):
-        count += 1
-        username = connection['userData']['username']
-        status = connection['status']
-        print(f'   {count}. {connection["id"]} - {username} ({status})')
-    
-    print(f'\n   ✓ Fetched {count} connections total\n')
+from onlyfans_sdk import AsyncOFAuthClient, OFAuthClient
 
-    print('2. Manual pagination with offset...')
-    
-    page = 1
-    has_more = True
-    offset = 0
-    total_fetched = 0
 
-    while has_more and page <= 3:
-        print(f'\n   Fetching page {page}...')
-        
-        result = account.list_connections(
-            client,
-            limit=10,
-            offset=offset,
-        )
-        
-        print(f'   ✓ Got {len(result["list"])} connections')
-        total_fetched += len(result['list'])
-        
-        has_more = result['hasMore']
-        offset = offset + 10 if has_more else offset
-        page += 1
-    
-    print(f'\n   ✓ Total fetched across {page - 1} pages: {total_fetched} connections\n')
+def sync_example() -> None:
+    with OFAuthClient(
+        access_token=access_token(), linked_account_id=require("OFAUTH_LINKED_ACCOUNT_ID"), base_url=API_URL
+    ) as client:
+        # Manual: pass page.nextCursor back as cursor.
+        page = client.access.posts.list(limit=10)
+        print("first page:", len(page["items"]), "posts; more:", page["page"]["hasMore"])
+        if page["page"]["hasMore"]:
+            second = client.access.posts.list(limit=10, cursor=page["page"]["nextCursor"])
+            print("second page:", len(second["items"]), "posts")
 
-    print('3. Custom page size with generator...')
-    print('   Using page_size=5, max_items=15\n')
-    
-    count = 0
-    pages_fetched = 0
-    
-    for connection in account.iter_connections(client, max_items=15, page_size=5):
-        count += 1
-        if count % 5 == 1:
-            pages_fetched += 1
-            print(f'   Page {pages_fetched}:')
-        print(f'     - {connection["userData"]["username"]}')
-    
-    print(f'\n   ✓ Fetched {count} items across ~{pages_fetched} pages\n')
+        # Iterator: fetches pages as needed, stops after max_items.
+        for subscriber in client.access.subscribers.iterate(limit=50, max_items=200):
+            print("subscriber", subscriber["id"])
 
-    print('✅ Example completed successfully!')
 
-if __name__ == '__main__':
-    try:
-        main()
-    except Exception as error:
-        print(f'❌ Error: {error}')
-        exit(1)
+async def async_example() -> None:
+    async with AsyncOFAuthClient(
+        access_token=require("OFAUTH_ACCESS_TOKEN"),
+        linked_account_id=require("OFAUTH_LINKED_ACCOUNT_ID"),
+        base_url=API_URL,
+    ) as client:
+        count = 0
+        async for _chat in client.access.chats.iterate(max_items=100):
+            count += 1
+        print("chats:", count)
+
+
+if __name__ == "__main__":
+    sync_example()
+    asyncio.run(async_example())
